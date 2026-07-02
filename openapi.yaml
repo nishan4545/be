@@ -1,0 +1,81 @@
+openapi: 3.0.3
+info:
+  title: Tournament Slot Booking API
+  description: Backend APIs for user registrations, admin approvals, tournament booking, payments, and notifications.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /api/auth/register:
+    post:
+      summary: Register player user
+      requestBody:
+        required: true
+        content:
+          application_json:
+            schema:
+              type: object
+              properties:
+                mobileNumber:
+                  type: string
+                password:
+                  type: string
+                fullName:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Registration successful
+  /api/auth/login:
+    post:
+      summary: Player / Admin Authentication login
+      requestBody:
+        required: true
+        content:
+          application_json:
+            schema:
+              type: object
+              properties:
+                mobileNumber:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Auth token issued
+  /api/player/bookings/join/{tournamentId}:
+    post:
+      summary: Join a tournament slot
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tournamentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Slot reserved
+  /api/player/payments/order/{bookingId}:
+    post:
+      summary: Create Razorpay Checkout payment order
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Razorpay order created
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
